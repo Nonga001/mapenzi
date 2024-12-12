@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block content %}
+    <h1 class="text-4xl font-bold text-blue-700">Welcome, {{ request.user.username }}</h1>
+
+    {% if role == "lecturer" %}
+        <h2 class="text-3xl font-semibold text-green-600 mt-6">Lecturer Dashboard</h2>
+        <ul class="list-disc pl-6 text-lg text-gray-800">
+            {% for function in functions %}
+                <li class="mb-2">{{ function }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Create Announcement Button -->
+        <div class="mt-6">
+            <a href="{% url 'create_announcement' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Create New Announcement</a>
+        </div>
+
+        <h3 class="text-2xl font-medium text-orange-600 mt-6">Your Announcements:</h3>
+        <ul class="space-y-4">
+            {% for announcement in announcements %}
+                <li class="bg-white shadow-md p-4 rounded-lg hover:bg-blue-50">
+                    <strong class="text-xl text-teal-600">{{ announcement.title }}</strong>
+                    <p class="text-gray-700 mt-2">{{ announcement.content }}</p>
+                    <small class="text-sm text-gray-500">Created by: {{ announcement.creator.username }} on {{ announcement.created_at }}</small>
+                    <br>
+                    <a href="{% url 'edit_announcement' announcement.id %}" class="text-blue-500 hover:underline">Edit</a> |
+                    <a href="{% url 'delete_announcement' announcement.id %}" class="text-red-500 hover:underline">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% elif role == "student" %}
+        <h2 class="text-3xl font-semibold text-purple-600 mt-6">Student Dashboard</h2>
+        <h3 class="text-2xl font-medium text-orange-600 mt-6">Announcements:</h3>
+        <ul class="space-y-4">
+            {% for announcement in announcements %}
+                <li class="bg-white shadow-md p-4 rounded-lg hover:bg-blue-50">
+                    <strong class="text-xl text-teal-600">{{ announcement.title }}</strong>
+                    <p class="text-gray-700 mt-2">{{ announcement.content }}</p>
+                    <small class="text-sm text-gray-500">Created by: {{ announcement.creator.username }} on {{ announcement.created_at }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <h2 class="text-3xl font-semibold text-red-600 mt-6">Unknown Role</h2>
+        <p class="text-xl text-gray-800 mt-4">Contact the administrator for role assignment.</p>
+    {% endif %}
+{% endblock %}
