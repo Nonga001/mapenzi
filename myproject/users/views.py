@@ -125,13 +125,30 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+
+@login_required
 def profile(request):
-    # You can pass the user details or other context to the template
+    user = request.user
+    # Get all the group names the user is a part of
+    groups = user.groups.values_list('name', flat=True)
+
+    # Debugging: Print the groups the user belongs to
+    print(groups)
+
+    # Set role based on the group the user belongs to
+    if 'lecturers' in groups:  # Match the exact group name from the admin panel (in lowercase)
+        role = 'Lecturer'
+    elif 'students' in groups:
+        role = 'Student'
+    else:
+        role = 'Unknown'  # If no specific group is found, set as Unknown
+
     context = {
-        'user': request.user,
+        'role': role,
+        'date_joined': user.date_joined,
+        'last_login': user.last_login,
     }
     return render(request, 'profile.html', context)
-
 def enrollment(request):
     # Example view for enrollment
     context = {

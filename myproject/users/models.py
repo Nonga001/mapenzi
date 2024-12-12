@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -17,3 +18,10 @@ class Announcement(models.Model):
 
     def __str__(self):
         return self.title
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    role = models.CharField(max_length=50, choices=[('student', 'Student'), ('lecturer', 'Lecturer')])
+
+    def __str__(self):
+        return self.user.username
